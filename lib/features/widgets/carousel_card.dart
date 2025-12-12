@@ -50,7 +50,8 @@ class CarouselCard extends StatelessWidget {
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 1000),
                 reverseTransitionDuration: const Duration(milliseconds: 500),
-                pageBuilder: (_, __, ___) => PokemonDetail(pokemon: pokemon),
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    PokemonDetail(pokemon: pokemon),
                 settings: RouteSettings(
                   arguments: Arguments(
                     tag: tag,

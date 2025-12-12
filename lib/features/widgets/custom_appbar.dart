@@ -2,7 +2,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:pokemon/core/models/arguments.dart';
 import 'package:pokemon/core/styles/appstyle.dart';
+import 'package:pokemon/core/utils/string_utils.dart';
 
+/// Custom AppBar widget for the Pokemon app
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
@@ -26,7 +28,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       foregroundColor: AppStyle.mainColor,
       title: Center(
         child: Text(
-          capitalize(title),
+          StringUtils.capitalize(title),
           style: GoogleFonts.pressStart2p(color: Colors.black, fontSize: 20),
           textAlign: TextAlign.center,
         ),
@@ -36,6 +38,4 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(60);
-
-  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }

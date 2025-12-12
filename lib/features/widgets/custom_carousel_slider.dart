@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pokemon/core/models/pokemon.dart';
-import 'package:pokemon/features/Widgets/carousel_card.dart';
+import 'package:pokemon/core/utils/color_utils.dart';
+import 'package:pokemon/core/utils/string_utils.dart';
+import 'package:pokemon/features/widgets/carousel_card.dart';
 import 'package:pokemon/features/home/controllers/home_controller.dart';
 
-// import '../../Common/Model/movie.dart';
-
+/// Custom carousel slider widget for displaying Pokemon cards
 class CustomCarouselSlider extends StatefulWidget {
   const CustomCarouselSlider({
     super.key,
@@ -28,72 +29,48 @@ class CustomCarouselSlider extends StatefulWidget {
 }
 
 class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
-  ValueNotifier<int> indexSelectedContainer = ValueNotifier<int>(-1);
-  ValueNotifier<double> sizeSelectedContainer = ValueNotifier<double>(150);
-  ValueNotifier<FocusNode> itemFocusNode = ValueNotifier<FocusNode>(
+  final ValueNotifier<int> indexSelectedContainer = ValueNotifier<int>(-1);
+  final ValueNotifier<double> sizeSelectedContainer = ValueNotifier<double>(
+    150,
+  );
+  final ValueNotifier<FocusNode> itemFocusNode = ValueNotifier<FocusNode>(
     FocusNode(),
   );
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
     indexSelectedContainer.dispose();
     sizeSelectedContainer.dispose();
+    itemFocusNode.value.dispose();
     itemFocusNode.dispose();
     super.dispose();
   }
 
-  Color getColorFromName(String name, int opacity) {
-    final typesColor = {
-      "normal": Colors.brown[opacity],
-      "fighting": Colors.red[opacity],
-      "flying": Colors.blue[opacity],
-      "poison": Colors.purple[opacity],
-      "ground": Colors.brown[opacity],
-      "rock": Colors.grey[opacity],
-      "bug": Colors.lightGreen[opacity],
-      "ghost": Colors.deepPurple[opacity],
-      "fire": Colors.orange[opacity],
-      "water": Colors.blue[opacity],
-      "grass": Colors.green[opacity],
-      "electric": Colors.yellow[opacity],
-      "psychic": Colors.pink[opacity],
-      "ice": Colors.cyan[opacity],
-      "dragon": Colors.indigo[opacity],
-      "fairy": Colors.pink[opacity],
-      "dark": Colors.brown[opacity],
-      "steel": Colors.blueGrey[opacity],
-      "unknown": Colors.grey,
-      "shadow": Colors.black,
-    };
-
-    return typesColor[name.toLowerCase()] ??
-        Colors.grey; // Cor padrão se não encontrar
-  }
-
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = widget.showType
+        ? PokemonColorUtils.getTypeColor(widget.type, opacity: 300)
+        : PokemonColorUtils.getTypeColor(widget.name, opacity: 300);
+
     return Container(
-      color: getColorFromName(widget.showType ? widget.type : widget.name, 300),
+      color: backgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          widget.showType
-              ? Text(
-                  widget.type.isNotEmpty
-                      ? widget.type[0].toUpperCase() + widget.type.substring(1)
-                      : widget.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                )
-              : const SizedBox(),
+          if (widget.showType)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                StringUtils.capitalize(
+                  widget.type.isNotEmpty ? widget.type : widget.name,
+                ),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
           Padding(
             padding: EdgeInsets.only(top: widget.showType ? 4 : 0),
             child: SizedBox(
@@ -102,15 +79,22 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.pokemons.length,
                 itemBuilder: (_, index) {
-                  var item = widget.pokemons[index];
+                  final item = widget.pokemons[index];
+                  final cardColor = widget.showType
+                      ? PokemonColorUtils.getTypeColor(
+                          widget.type,
+                          opacity: 300,
+                        )
+                      : PokemonColorUtils.getTypeColor(
+                          widget.name,
+                          opacity: 300,
+                        );
+
                   return CarouselCard(
                     index: index,
                     name: widget.name,
                     pokemon: item,
-                    color: getColorFromName(
-                      widget.showType ? widget.type : widget.name,
-                      300,
-                    ),
+                    color: cardColor,
                     homePageController: widget.homePageController,
                     indexSelectedContainer: indexSelectedContainer,
                     sizeSelectedContainer: sizeSelectedContainer,

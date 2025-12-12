@@ -13,10 +13,10 @@ dependencies:
   intl: ^0.20.2 # para formatar datas
   switcher: 1.0.0
   carousel_slider: ^5.0.0 # para fazer o carrossel de imagens
-  flutter_rating_bar: ^4.0.0 # notas com estrelinhas
-  shared_preferences: ^2.0.6 # save dos dados localmente
-  share_plus: ^11.0.0 # compartilhar conteúdo
-  path_provider: ^2.0.8 # para salvar imagens
+  # flutter_rating_bar: ^4.0.0 # notas com estrelinhas
+  # shared_preferences: ^2.0.6 # save dos dados localmente
+  # share_plus: ^11.0.0 # compartilhar conteúdo
+  # path_provider: ^2.0.8 # para salvar imagens
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.1.0
   # device_preview: ^1.2.0

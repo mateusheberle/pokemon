@@ -1,6 +1,9 @@
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pokemon/core/constants/app_strings.dart';
 import 'package:pokemon/core/models/arguments.dart';
 import 'package:pokemon/core/models/pokemon.dart';
+import 'package:pokemon/core/utils/color_utils.dart';
+import 'package:pokemon/core/utils/string_utils.dart';
 import 'package:pokemon/features/repositories/imagem_network.dart';
 import 'package:flutter/material.dart';
 
@@ -42,35 +45,6 @@ class _PokemonDetailState extends State<PokemonDetail> {
     super.dispose();
   }
 
-  String getId(Pokemon pokemon) {
-    if (pokemon.id.toString().length < 3) {
-      return '00${pokemon.id}';
-    } else if (pokemon.id.toString().length < 2) {
-      return '00${pokemon.id}';
-    }
-    return '${pokemon.id}';
-  }
-
-  Color getColorFromName(String name, int opacity) {
-    final colors = {
-      'red': Colors.red[opacity],
-      'green': Colors.green[opacity],
-      'blue': Colors.blue[opacity],
-      'yellow': Colors.yellow[opacity],
-      'orange': Colors.orange[opacity],
-      'purple': Colors.purple[opacity],
-      'pink': Colors.pink[opacity],
-      'brown': Colors.brown[opacity],
-      'grey': Colors.grey[opacity],
-      'black': Colors.black,
-      'white': Colors.white,
-      // Adicione mais se necessário
-    };
-
-    return colors[name.toLowerCase()] ??
-        Colors.grey; // Cor padrão se não encontrar
-  }
-
   int activeIndex = 0;
 
   @override
@@ -88,7 +62,7 @@ class _PokemonDetailState extends State<PokemonDetail> {
               width: 80,
             ),
             Text(
-              "#${getId(widget.pokemon)}",
+              "#${StringUtils.formatPokemonId(widget.pokemon.id)}",
               style: GoogleFonts.inter(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -97,9 +71,9 @@ class _PokemonDetailState extends State<PokemonDetail> {
             ),
           ],
         ),
-        backgroundColor: getColorFromName(
+        backgroundColor: PokemonColorUtils.getSpeciesColor(
           arguments.pokemon.color ?? 'white',
-          200,
+          opacity: 200,
         ),
         elevation: 0,
       ),
@@ -110,7 +84,10 @@ class _PokemonDetailState extends State<PokemonDetail> {
             child: Container(
               height: double.infinity,
               width: double.infinity,
-              color: getColorFromName(arguments.pokemon.color ?? 'white', 200),
+              color: PokemonColorUtils.getSpeciesColor(
+                arguments.pokemon.color ?? 'white',
+                opacity: 200,
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,9 +104,9 @@ class _PokemonDetailState extends State<PokemonDetail> {
                                     width: 360,
                                     margin: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: getColorFromName(
+                                      color: PokemonColorUtils.getSpeciesColor(
                                         arguments.pokemon.color ?? 'white',
-                                        300,
+                                        opacity: 300,
                                       ),
                                       borderRadius: BorderRadius.circular(180),
                                     ),
@@ -139,17 +116,16 @@ class _PokemonDetailState extends State<PokemonDetail> {
                                     fit: BoxFit.cover,
                                     height: 240,
                                     width: 240,
-                                    color: getColorFromName(
+                                    color: PokemonColorUtils.getSpeciesColor(
                                       arguments.pokemon.color ?? 'white',
-                                      600,
+                                      opacity: 600,
                                     ),
                                   ),
                                 ],
                               )
                             : const Placeholder(),
                         Text(
-                          arguments.pokemon.name[0].toUpperCase() +
-                              arguments.pokemon.name.substring(1),
+                          StringUtils.capitalize(arguments.pokemon.name),
                           style: GoogleFonts.inter(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -167,14 +143,14 @@ class _PokemonDetailState extends State<PokemonDetail> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: getColorFromName(
+                                  color: PokemonColorUtils.getSpeciesColor(
                                     arguments.pokemon.color ?? 'black',
-                                    600,
+                                    opacity: 600,
                                   ),
                                   borderRadius: BorderRadius.circular(24),
                                 ),
                                 child: Text(
-                                  type[0].toUpperCase() + type.substring(1),
+                                  StringUtils.capitalize(type),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -190,19 +166,19 @@ class _PokemonDetailState extends State<PokemonDetail> {
                       children: [
                         _buildTabCard(
                           0,
-                          'Info',
+                          AppStrings.infoTab,
                           InfoTab(pokemon: arguments.pokemon),
                           arguments,
                         ),
                         _buildTabCard(
                           1,
-                          'Stats',
+                          AppStrings.statsTab,
                           StatusTab(pokemon: arguments.pokemon),
                           arguments,
                         ),
                         _buildTabCard(
                           2,
-                          'Evolução',
+                          AppStrings.evolutionTab,
                           EvolucaoTab(pokemon: arguments.pokemon),
                           arguments,
                         ),
@@ -254,9 +230,9 @@ class _PokemonDetailState extends State<PokemonDetail> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: getColorFromName(
+                    color: PokemonColorUtils.getSpeciesColor(
                       arguments.pokemon.color ?? 'black',
-                      600,
+                      opacity: 600,
                     ),
                   ),
                 ),
@@ -288,23 +264,18 @@ class InfoTab extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        _linha('ID', '#${pokemon.id.toString().padLeft(3, '0')}'),
+        _linha(AppStrings.id, '#${StringUtils.formatPokemonId(pokemon.id)}'),
+        _linha(AppStrings.species, StringUtils.capitalize(pokemon.name)),
         _linha(
-          'Espécie',
-          pokemon.name[0].toUpperCase() + pokemon.name.substring(1),
+          AppStrings.type,
+          pokemon.types!.map((type) => StringUtils.capitalize(type)).join(', '),
         ),
+        _linha(AppStrings.height, '${pokemon.height}'),
+        _linha(AppStrings.weight, '${pokemon.weight}'),
         _linha(
-          'Tipo',
-          pokemon.types!
-              .map((type) => type[0].toUpperCase() + type.substring(1))
-              .join(', '),
-        ),
-        _linha('Altura', '${pokemon.height}'),
-        _linha('Peso', '${pokemon.weight}'),
-        _linha(
-          'Habilidades',
+          AppStrings.abilities,
           pokemon.abilities!
-              .map((ability) => ability[0].toUpperCase() + ability.substring(1))
+              .map((ability) => StringUtils.capitalize(ability))
               .join('\n'),
         ),
       ],
@@ -348,12 +319,12 @@ class StatusTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 10),
-        _linha('HP', pokemon.status![0]),
-        _linha('Ataque', pokemon.status![1]),
-        _linha('Defesa', pokemon.status![2]),
-        _linha('Ataque Especial', pokemon.status![3]),
-        _linha('Defesa Especial', pokemon.status![4]),
-        _linha('Velocidade', pokemon.status![5]),
+        _linha(AppStrings.hp, pokemon.stats![0]),
+        _linha(AppStrings.attack, pokemon.stats![1]),
+        _linha(AppStrings.defense, pokemon.stats![2]),
+        _linha(AppStrings.specialAttack, pokemon.stats![3]),
+        _linha(AppStrings.specialDefense, pokemon.stats![4]),
+        _linha(AppStrings.speed, pokemon.stats![5]),
       ],
     );
   }
@@ -410,11 +381,9 @@ class EvolucaoTab extends StatelessWidget {
             if (evolution != null)
               EvolutionRow(
                 id: evolution.id,
-                name:
-                    evolution.name[0].toUpperCase() +
-                    evolution.name.substring(1),
+                name: StringUtils.capitalize(evolution.name),
                 type: evolution.types!
-                    .map((t) => t[0].toUpperCase() + t.substring(1))
+                    .map((t) => StringUtils.capitalize(t))
                     .toList(),
                 sprites: evolution.sprites ?? [],
               ),
@@ -452,7 +421,7 @@ class EvolutionRow extends StatelessWidget {
         ),
       ),
       title: Text(
-        name[0].toUpperCase() + name.substring(1),
+        StringUtils.capitalize(name),
         style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
@@ -460,7 +429,7 @@ class EvolutionRow extends StatelessWidget {
         ),
       ),
       subtitle: Text(
-        type.map((t) => t[0].toUpperCase() + t.substring(1)).join(', '),
+        type.map((t) => StringUtils.capitalize(t)).join(', '),
         style: const TextStyle(fontSize: 14, color: Colors.grey),
       ),
     );

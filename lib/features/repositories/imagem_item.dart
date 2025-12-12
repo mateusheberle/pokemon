@@ -1,7 +1,9 @@
 import 'package:pokemon/core/models/pokemon.dart';
+import 'package:pokemon/core/utils/string_utils.dart';
 import 'package:pokemon/features/repositories/imagem_network.dart';
 import 'package:flutter/material.dart';
 
+/// Widget to display a Pokemon image with its name
 class ImageItem extends StatelessWidget {
   const ImageItem({
     super.key,
@@ -49,19 +51,14 @@ class ImageItem extends StatelessWidget {
                   horizontal: 20.0,
                 ),
                 child: Center(
-                  child: Stack(
-                    children: [
-                      Text(
-                        pokemon.name[0].toUpperCase() +
-                            pokemon.name.substring(1),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white,
-                          shadows: [Shadow(blurRadius: 2, color: Colors.black)],
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    StringUtils.capitalize(pokemon.name),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white,
+                      shadows: [Shadow(blurRadius: 2, color: Colors.black)],
+                    ),
                   ),
                 ),
               ),

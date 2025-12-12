@@ -9,11 +9,18 @@ import 'package:pokemon/features/widgets/custom_appbar.dart';
 import 'package:pokemon/features/widgets/custom_carousel_slider.dart';
 import 'package:pokemon/features/widgets/custom_refresh.dart';
 
+/// Home page displaying Pokemon organized by type
+///
+/// This page shows Pokemon in carousel sliders grouped by their types.
+/// It fetches data for a specific generation on initialization.
 class HomePage extends StatefulWidget {
-  final String title;
-  final int geracao;
-
   const HomePage({super.key, required this.title, required this.geracao});
+
+  /// Page title
+  final String title;
+
+  /// Pokemon generation number to display (1, 2, 3, etc.)
+  final int geracao;
 
   @override
   State<HomePage> createState() => _HomePageState();
